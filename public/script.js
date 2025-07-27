@@ -5,10 +5,19 @@ const timezone = document.getElementById('time-zone');
 const countryEl = document.getElementById('country');
 const weatherForecastEl = document.getElementById('weather-forecast');
 const currentTempEl = document.getElementById('current-temp');
+const unsupportedMessage = document.getElementById('unsupported-message');
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const months = ['January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'];
+
+// Show loading timeout fallback if data doesn't load
+let dataLoaded = false;
+setTimeout(() => {
+  if (!dataLoaded) {
+    unsupportedMessage.style.display = 'block';
+  }
+}, 7000); // 7 seconds timeout
 
 // Clock & Date
 setInterval(() => {
@@ -29,7 +38,7 @@ setInterval(() => {
 if ('geolocation' in navigator) {
   getWeatherData();
 } else {
-  document.getElementById('unsupported-message').style.display = 'block';
+  unsupportedMessage.style.display = 'block';
 }
 
 function getWeatherData() {
@@ -40,6 +49,7 @@ function getWeatherData() {
     fetch(`https://weather-app-ja3o.onrender.com/weather?lat=${latitude}&lon=${longitude}`)
       .then(res => res.json())
       .then(data => {
+        dataLoaded = true;
         timezone.innerHTML = data.name;
         countryEl.innerHTML = `${data.sys.country}`;
         currentWeatheritemEl.innerHTML = `
@@ -59,7 +69,7 @@ function getWeatherData() {
         `;
       }).catch(err => {
         console.error('Weather fetch error:', err);
-        alert("Failed to load weather data.");
+        unsupportedMessage.style.display = 'block';
       });
 
     // === 5-Day Forecast ===
@@ -109,7 +119,7 @@ function getWeatherData() {
         console.error('Forecast fetch error:', err);
       });
   }, (error) => {
-    alert("Location access is required to get your weather. Please allow it.");
+    unsupportedMessage.style.display = 'block';
     console.error("Location error:", error);
   });
 }

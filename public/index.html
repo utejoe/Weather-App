@@ -27,9 +27,16 @@
     <div class="weather-forecast" id="weather-forecast"></div>
   </div>
 
-  <!-- ⚠️ Message shown if location not supported -->
+  <!-- Fallback for users with JS disabled -->
+  <noscript>
+    <div style="color:red; text-align:center; padding:1em;">
+      ⚠️ This weather app requires JavaScript to work. Please use a modern browser like Chrome or Firefox.
+    </div>
+  </noscript>
+
+  <!-- Hidden fallback shown via script if location or JS fails -->
   <div id="unsupported-message" style="display:none; color:red; padding: 1em; text-align: center;">
-    ⚠️ Your browser doesn't support live location-based weather updates. Try using Chrome or Firefox.
+    ⚠️ Your browser may not support live weather updates. Try using Chrome or Firefox for full functionality.
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
