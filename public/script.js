@@ -33,7 +33,7 @@ function getWeatherData() {
     const { latitude, longitude } = pos.coords;
 
     // === Current Weather ===
-    fetch(`http://localhost:5000/weather?lat=${latitude}&lon=${longitude}`)
+    fetch(`https://weather-app-ja3o.onrender.com/weather?lat=${latitude}&lon=${longitude}`)
       .then(res => res.json())
       .then(data => {
         timezone.innerHTML = data.name;
@@ -56,7 +56,8 @@ function getWeatherData() {
       });
 
     // === 5-Day Forecast ===
-    fetch(`http://localhost:5000/forecast?lat=${latitude}&lon=${longitude}`)
+    // === 5-Day Forecast ===
+    fetch(`https://weather-app-ja3o.onrender.com/forecast?lat=${latitude}&lon=${longitude}`)
       .then(res => res.json())
       .then(data => {
         let forecastMap = {};
