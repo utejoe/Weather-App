@@ -25,8 +25,12 @@ setInterval(() => {
   dateEl.innerHTML = `${days[day]}, ${date} ${months[month]}`;
 }, 1000);
 
-// Get Weather
-getWeatherData();
+// ✅ Detect if geolocation is available
+if ('geolocation' in navigator) {
+  getWeatherData();
+} else {
+  document.getElementById('unsupported-message').style.display = 'block';
+}
 
 function getWeatherData() {
   navigator.geolocation.getCurrentPosition((pos) => {
@@ -53,9 +57,11 @@ function getWeatherData() {
             <div class="temp">Feels like - ${data.main.feels_like}&#176; C</div>
           </div>
         `;
+      }).catch(err => {
+        console.error('Weather fetch error:', err);
+        alert("Failed to load weather data.");
       });
 
-    // === 5-Day Forecast ===
     // === 5-Day Forecast ===
     fetch(`https://weather-app-ja3o.onrender.com/forecast?lat=${latitude}&lon=${longitude}`)
       .then(res => res.json())
@@ -63,10 +69,9 @@ function getWeatherData() {
         let forecastMap = {};
         const today = moment().format('ddd');
 
-        // Group entries by day
         data.list.forEach(item => {
           const day = moment(item.dt_txt).format('ddd');
-          if (day === today) return; // Skip today's data
+          if (day === today) return;
 
           if (!forecastMap[day]) {
             forecastMap[day] = {
@@ -74,11 +79,9 @@ function getWeatherData() {
               icon: item.weather[0].icon
             };
           }
-
           forecastMap[day].temps.push(item.main.temp);
         });
 
-        // Build forecast cards (limit 5 days)
         let forecastHTML = '';
         let dayCount = 0;
 
@@ -102,9 +105,11 @@ function getWeatherData() {
         }
 
         weatherForecastEl.innerHTML = forecastHTML;
+      }).catch(err => {
+        console.error('Forecast fetch error:', err);
       });
   }, (error) => {
-    alert("Please enable location to get weather updates.");
+    alert("Location access is required to get your weather. Please allow it.");
     console.error("Location error:", error);
   });
 }
